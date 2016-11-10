@@ -11,7 +11,7 @@ public class GameFactory implements IGameFactory {
 	 */
 	@Override
 	public String[] getGameNames() {
-		return new String[] { "Gold", "Snake" };
+		return new String[] {"Snake", "Gold" };
 	}
 
 	/**

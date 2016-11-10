@@ -49,7 +49,7 @@ public class GameController implements Runnable {
 		this.view = view;
 		this.gameModel = null;
 		this.isRunning = false;
-		this.updateInterval = 150;
+		this.updateInterval = 100;
 
 		this.keypresses = new LinkedList<Integer>();
 
