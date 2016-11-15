@@ -40,7 +40,7 @@ public class SnakeModel extends GameModel{
     }
 
     /** Graphical representation of an apple */
-    private static final GameTile APPLE_TILE = new RoundTile(Color.GREEN,
+    private static final GameTile APPLE_TILE = new RoundTile(Color.YELLOW,
             Color.RED, 2.0);
     /** Graphical representation of the snake head */
     private static final GameTile SNAKEHEAD_TILE = new SnakeHeadTile(Color.GREEN, Color.BLACK,
@@ -53,8 +53,8 @@ public class SnakeModel extends GameModel{
     /** Graphical representation of a blank tile. */
     private static final GameTile BLANK_TILE = new GameTile();
 
-    /** A list containing the positions of all coins. */
-    private final List<Position> coins = new ArrayList<Position>();
+    /** A list containing the positions of all apple. */
+    private final List<Position> apple = new ArrayList<Position>();
 
     /** A list containing the positions of all snake parts. */
     private final LinkedList<Position> snake = new LinkedList<Position>();
@@ -104,7 +104,7 @@ public class SnakeModel extends GameModel{
 
         // ... add a new apple to the empty tile.
         setGameboardState(newApplePos, APPLE_TILE);
-        this.coins.add(newApplePos);
+        this.apple.add(newApplePos);
     }
 
     /**
@@ -181,7 +181,7 @@ public class SnakeModel extends GameModel{
 
         // Remove the apple at the new snake head position (if any), then add a new apple.
         // Else, remove the last snake part.
-        if (this.coins.remove(this.snakeHeadPos)) {
+        if (this.apple.remove(this.snakeHeadPos)) {
             this.score++;
             addApple();
         } else {
