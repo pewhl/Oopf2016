@@ -88,6 +88,7 @@ public class SnakeHeadTile extends GameTile {
      */
     @Override
     public void draw(final Graphics g, final int x, final int y, final Dimension d) {
+
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(this.fillColor);
         double xOffset = (d.width * (1.0 - this.scale)) / 2.0;

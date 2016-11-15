@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -54,10 +55,10 @@ public class SnakeModel extends GameModel{
     private static final GameTile BLANK_TILE = new GameTile();
 
     /** A list containing the positions of all coins. */
-    private final List<Position> coins = new ArrayList<Position>();
+    private final List<Position> apples = new ArrayList<Position>();
 
     /** A list containing the positions of all snake parts. */
-    private final LinkedList<Position> snake = new LinkedList<Position>();
+    private final Deque<Position> snake = new LinkedList<Position>();
 
     /** The position of the snake head. */
     private Position snakeHeadPos;
@@ -67,6 +68,9 @@ public class SnakeModel extends GameModel{
 
     /** The number of apples eaten. */
     private int score;
+
+    /** The gameboard size, used for checks.*/
+    private Dimension gameboardSize = getGameboardSize();
 
     /**
      * Create a new model for the snake game.
@@ -87,7 +91,6 @@ public class SnakeModel extends GameModel{
         setGameboardState(this.snakeHeadPos, SNAKEHEAD_TILE);
         // Insert an apple into the gameboard.
         addApple();
-
     }
 
     /**
@@ -97,14 +100,36 @@ public class SnakeModel extends GameModel{
         Position newApplePos;
         Dimension size = getGameboardSize();
         // Loop until a blank position is found and ...
+
         do {
+            if (isGameboardFull()) {
+                return;
+            }
             newApplePos = new Position((int) (Math.random() * size.width),
                     (int) (Math.random() * size.height));
         } while (!isPositionEmpty(newApplePos));
 
         // ... add a new apple to the empty tile.
         setGameboardState(newApplePos, APPLE_TILE);
-        this.coins.add(newApplePos);
+        this.apples.add(newApplePos);
+    }
+
+    /**
+     * Return whether the board is full of snake parts.
+     *
+     * @return true if gameboard is full of snake parts.
+     */
+    private boolean isGameboardSnake() {
+        return (this.gameboardSize.width * this.gameboardSize.height) == snake.size();
+    }
+
+    /**
+     * Return whether the board is full of snake parts or apples.
+     *
+     * @return true if gameboard is full of snake parts or apples.
+     */
+    private boolean isGameboardFull() {
+        return (this.gameboardSize.width * this.gameboardSize.height) == snake.size() + apples.size();
     }
 
     /**
@@ -160,6 +185,10 @@ public class SnakeModel extends GameModel{
      */
     @Override
     public void gameUpdate(final int lastKey) throws GameOverException {
+        if (isGameboardSnake()) {
+            throw new GameOverException(this.score);
+        }
+
         updateDirection(lastKey);
 
         // Change the previous snake head to a body part.
@@ -181,7 +210,7 @@ public class SnakeModel extends GameModel{
 
         // Remove the apple at the new snake head position (if any), then add a new apple.
         // Else, remove the last snake part.
-        if (this.coins.remove(this.snakeHeadPos)) {
+        if (this.apples.remove(this.snakeHeadPos)) {
             this.score++;
             addApple();
         } else {
@@ -201,8 +230,7 @@ public class SnakeModel extends GameModel{
      * @return <code>false</code> if the position is outside the playing field, <code>true</code> otherwise.
      */
     private boolean isOutOfBounds(Position pos) {
-        return pos.getX() < 0 || pos.getX() >= getGameboardSize().width
-                || pos.getY() < 0 || pos.getY() >= getGameboardSize().height;
+        return pos.getX() < 0 || pos.getX() >= gameboardSize.width
+                || pos.getY() < 0 || pos.getY() >= gameboardSize.height;
     }
-
 }
